@@ -16,9 +16,11 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/users/**").hasRole("ADMIN").antMatchers("/roles/**")
-				.permitAll().anyRequest().authenticated().and().httpBasic();
-
+		http.csrf().disable().authorizeRequests()
+		.antMatchers("/actuator/prometheus").permitAll()
+		.antMatchers("/users/**").hasRole("ADMIN").antMatchers("/roles/**")
+				.permitAll().anyRequest().authenticated()
+				.and().httpBasic();
 	}
 
 	@Bean

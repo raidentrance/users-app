@@ -19,31 +19,15 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 @Configuration
-public class KafkaConfiguration {
-	public Map<String, Object> producerProps() {
-		Map<String, Object> props = new HashMap<>();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		props.put(ProducerConfig.RETRIES_CONFIG, 0);
-		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		return props;
-	}
+public class Devs4jKafkaConfiguration {
 
-	@Bean
-	public KafkaTemplate<Integer, String> createTemplate() {
-		Map<String, Object> senderProps = producerProps();
-		ProducerFactory<Integer, String> pf = new DefaultKafkaProducerFactory<Integer, String>(senderProps);
-		KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
-		return template;
-	}
-
+	/**
+	 * Consumer
+	 */
 	private Map<String, Object> consumerProps() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "group");
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "devs4jGroup");
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
 		props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
 		props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
@@ -62,6 +46,29 @@ public class KafkaConfiguration {
 		ConcurrentKafkaListenerContainerFactory<Integer, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		return factory;
+	}
+
+	/**
+	 * Producer
+	 */
+	private Map<String, Object> producerProps() {
+		Map<String, Object> props = new HashMap<>();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(ProducerConfig.RETRIES_CONFIG, 0);
+		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		return props;
+	}
+
+	@Bean
+	public KafkaTemplate<Integer, String> createTemplate() {
+		Map<String, Object> senderProps = producerProps();
+		ProducerFactory<Integer, String> pf = new DefaultKafkaProducerFactory<Integer, String>(senderProps);
+		KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
+		return template;
 	}
 
 }
